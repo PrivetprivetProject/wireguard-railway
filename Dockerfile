@@ -1,14 +1,8 @@
 FROM alpine:latest
 
-RUN apk add --no-cache wireguard-tools
+RUN apk add --no-cache wireguard-tools bash
 
-CMD ["sh", "-c", "
-  cd /etc/wireguard &&
-  umask 077 &&
-  wg genkey | tee private.key | wg pubkey > public.key &&
-  echo 'PUBLIC KEY:' &&
-  cat public.key &&
-  echo '' &&
-  echo 'Starting sleep...' &&
-  sleep infinity
-"]
+COPY generate-keys.sh /generate-keys.sh
+RUN chmod +x /generate-keys.sh
+
+CMD ["/generate-keys.sh"]
